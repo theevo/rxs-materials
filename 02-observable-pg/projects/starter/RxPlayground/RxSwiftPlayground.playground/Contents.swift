@@ -34,3 +34,121 @@ import RxSwift
 /// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 /// THE SOFTWARE.
+
+example(of: "just, of, from") {
+    // 1
+    let one = 1
+    let two = 2
+    let three = 3
+    
+    // 2
+    let observable = Observable<Int>.just(one)
+    
+    let observable2 = Observable.of(one, two, three) // 3 elements of type Int
+    
+    let observable3 = Observable.of([one, two, three]) // 1 single element of type [Int]
+    
+    let observable4 = Observable.from([one, two, three]) // 3 elements of type Int
+}
+
+example(of: "subscribe to event") {
+    let one = 1
+    let two = 2
+    let three = 3
+    
+    let observable = Observable.of(one, two, three)
+    
+    observable.subscribe { event in
+        print(event)
+    }
+}
+
+example(of: "subscribe to event.element") {
+    let one = 1
+    let two = 2
+    let three = 3
+    
+    let observable = Observable.of(one, two, three)
+    
+    observable.subscribe { event in
+        if let element = event.element {
+            print(element)
+        }
+    }
+}
+
+example(of: "subscribe onNext") {
+    let one = 1
+    let two = 2
+    let three = 3
+    
+    let observable = Observable.of(one, two, three)
+    
+    observable.subscribe(onNext: { element in
+        print(element)
+    })
+}
+
+example(of: "empty") {
+    let observable = Observable<Void>.empty() // empty immediately terminates or has 0 values.
+    
+    observable.subscribe(
+        //1
+        onNext: { element in
+            print(element)
+        },
+        onCompleted: {
+            print("Completed")
+        }
+    )
+}
+
+example(of: "never") {
+    let observable = Observable<Void>.never() // never terminates. indefinite duration.
+    
+    observable.subscribe(
+        //1
+        onNext: { element in
+            print(element)
+        },
+        onCompleted: {
+            print("Completed")
+        }
+    )
+}
+
+example(of: "range") {
+    let observable = Observable<Int>.range(start: 1, count: 10)
+    
+    observable
+        .subscribe(onNext: { i in
+            let n = Double(i)
+            
+            let fibonacci = Int(
+                ((pow(1.61803, n) - pow(0.61803, n))
+                                /
+                                 2.23606.rounded()
+                                ))
+            print(fibonacci)
+        })
+}
+
+example(of: "dispose") {
+    let observable = Observable.of("A", "B", "C")
+    
+    let subscription = observable.subscribe { event in
+        print(event)
+    }
+    
+    subscription.dispose()
+}
+
+example(of: "DisposeBag") {
+    let disposeBag = DisposeBag()
+    
+    Observable.of("A", "B", "C")
+        .subscribe {
+            print($0)
+        }
+        .disposed(by: disposeBag)
+}
