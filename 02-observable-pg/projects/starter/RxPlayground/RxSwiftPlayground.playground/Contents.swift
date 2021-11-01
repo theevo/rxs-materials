@@ -152,3 +152,51 @@ example(of: "DisposeBag") {
         }
         .disposed(by: disposeBag)
 }
+
+example(of: "create") {
+    let disposeBag = DisposeBag()
+    
+    Observable<String>.create { observer in
+        observer.onNext("1")
+        
+        observer.onCompleted()
+        
+        observer.onNext("?")
+        
+        return Disposables.create()
+    }
+    .subscribe(
+        onNext: { print($0) },
+        onError: { print($0) },
+        onCompleted: { print("Completed")},
+        onDisposed: { print("Disposed") }
+    )
+    .disposed(by: disposeBag)
+}
+
+example(of: "onError") {
+    enum MyError: Error {
+        case anError
+    }
+    
+    let disposeBag = DisposeBag()
+    
+    Observable<String>.create { observer in
+        observer.onNext("1")
+        
+        observer.onError(MyError.anError)
+
+        observer.onCompleted()
+        
+        observer.onNext("?")
+        
+        return Disposables.create()
+    }
+    .subscribe(
+        onNext: { print($0) },
+        onError: { print($0) },
+        onCompleted: { print("Completed")},
+        onDisposed: { print("Disposed") }
+    )
+    .disposed(by: disposeBag)
+}
