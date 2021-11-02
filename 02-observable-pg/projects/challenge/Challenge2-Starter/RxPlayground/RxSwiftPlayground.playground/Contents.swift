@@ -6,9 +6,10 @@ example(of: "never") {
   let disposeBag = DisposeBag()
   
   observable
-    .do(onSubscribe: {
-      print("Subscribed")
-    })
+        .debug("wat")
+//    .do(onSubscribe: {
+//      print("Subscribed")
+//    })
     .subscribe(
       onNext: { element in
         print(element)
